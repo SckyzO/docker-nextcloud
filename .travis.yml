@@ -10,11 +10,6 @@ env:
   global:
     - DOCKER_CLI_EXPERIMENTAL=enabled
     - PLATFORMS=linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
-  matrix:
-    - VARIANT=16
-    - VARIANT=17
-    - VARIANT=18
-    - VARIANT=19
   
 stages:
   - name: test
@@ -28,14 +23,9 @@ script:
   - docker buildx create --use
   - docker buildx build
     --platform $PLATFORMS
-    --build-arg "NEXTCLOUD_VERSION"
-    --file "$VARIANT/Dockerfile"
-    --tag sckyzo/nextcloud_test:$NEXTCLOUD_VERSION
-    `if [ "$VARIANT" = "16" ]; then echo "--tag sckyzo/nextcloud_test:$VARIANT"; fi`
-    `if [ "$VARIANT" = "17" ]; then echo "--tag sckyzo/nextcloud_test:$VARIANT"; fi`
-    `if [ "$VARIANT" = "18" ]; then echo "--tag sckyzo/nextcloud_test:$VARIANT"; fi`
-    `if [ "$VARIANT" = "19" ]; then echo "--tag sckyzo/nextcloud_test:$VARIANT"; fi`
-    `if [ "$VARIANT" = "19" ]; then echo "--tag sckyzo/nextcloud_test:latest"; fi`
+    --build-arg "VERSION=$TRAVIS_BRANCH"
+    --file "Dockerfile"
+    --tag sckyzo/nextcloud_test:latest
+    `if [ -n "$TRAVIS_TAG" ]; then echo "--tag sckyzo/nextcloud_test:$TRAVIS_TAG"; fi`
     --push
     .
-
