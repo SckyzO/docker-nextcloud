@@ -23,7 +23,7 @@ script:
   - docker buildx create --use
   - docker buildx build
     --platform $PLATFORMS
-    --build-arg "VERSION=$TRAVIS_TAG | cut -d '.' -f 1"
+    --build-arg "VERSION=$(echo $TRAVIS_TAG | cut -d '.' -f 1)"
     --file "Dockerfile"
     --tag sckyzo/nextcloud_test:latest
     `if [ -n "$TRAVIS_TAG" ]; then echo "--tag sckyzo/nextcloud_test:$TRAVIS_TAG"; fi`
