@@ -18,15 +18,15 @@ stages:
     if: tag IS present OR branch = master
   
 script:
+  - export RELEASE=$(echo $TRAVIS_TAG | cut -d '.' -f 1)
   - echo "$DOCKER_PASSWORD" | docker login -u sckyzo --password-stdin
   - docker run --privileged linuxkit/binfmt:v0.8
   - docker buildx create --use
   - docker buildx build
     --platform $PLATFORMS
-    --build-arg "VERSION=$(echo $TRAVIS_TAG | cut -d '.' -f 1)"
     --file "Dockerfile"
     --tag sckyzo/nextcloud_test:latest
     `if [ -n "$TRAVIS_TAG" ]; then echo "--tag sckyzo/nextcloud_test:$TRAVIS_TAG"; fi`
-    `if [ -n "$TRAVIS_TAG" ]; then echo "--tag sckyzo/nextcloud_test:$VERSION"; fi`
+    `if [ -n "$TRAVIS_TAG" ]; then echo "--tag sckyzo/nextcloud_test:$RELEASE"; fi`
     --push
     .
